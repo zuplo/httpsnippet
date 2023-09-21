@@ -1,11 +1,13 @@
+import type { Request as NpmHarRequest, Param, PostDataCommon } from 'har-format';
 import type { ReducedHelperObject } from './helpers/reducer.js';
 import type { ClientId, TargetId } from './targets/index.js';
-import type { Param, PostDataCommon, Request as NpmHarRequest } from 'har-format';
-import type { UrlWithParsedQuery } from 'node:url';
+// eslint-disable-next-line unicorn/prefer-node-protocol
+import type { UrlWithParsedQuery } from 'url';
 
-import { format as urlFormat, parse as urlParse } from 'node:url';
+// eslint-disable-next-line unicorn/prefer-node-protocol, node/no-deprecated-api
+import { format as urlFormat, parse as urlParse } from 'url';
 
-import formDataToString from 'formdata-to-string';
+import formDataToString from '@zuplo/formdata-to-string';
 import { stringify as queryStringify } from 'qs';
 
 import { getHeaderName } from './helpers/headers.js';

@@ -1,6 +1,6 @@
 {
   "name": "@zuplo/httpsnippet",
-  "version": "7.1.2",
+  "version": "7.2.2",
   "description": "HTTP Request snippet generator for *most* languages",
   "homepage": "https://github.com/zuplo/httpsnippet",
   "license": "MIT",
@@ -79,9 +79,10 @@
     "test": "vitest --coverage"
   },
   "dependencies": {
-    "formdata-to-string": "^1.1.0",
+    "@zuplo/formdata-to-string": "^1.1.0",
     "qs": "^6.11.2",
-    "stringify-object": "^3.3.0"
+    "stringify-object": "^3.3.0",
+    "url": "^0.11.3"
   },
   "devDependencies": {
     "@readme/eslint-config": "^13.0.1",
