@@ -1,8 +1,8 @@
 {
-  "name": "@readme/httpsnippet",
+  "name": "@zuplo/httpsnippet",
   "version": "7.1.2",
   "description": "HTTP Request snippet generator for *most* languages",
-  "homepage": "https://github.com/readmeio/httpsnippet",
+  "homepage": "https://github.com/zuplo/httpsnippet",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
@@ -66,7 +66,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/readmeio/httpsnippet.git"
+    "url": "https://github.com/zuplo/httpsnippet.git"
   },
   "scripts": {
     "build": "tsup",
