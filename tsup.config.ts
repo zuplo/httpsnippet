@@ -22,9 +22,6 @@ export default defineConfig(options => ({
           url: true,
           querystring: true,
         },
-        globals: {
-          buffer: true,
-        },
       }),
     ];
   },
