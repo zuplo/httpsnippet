@@ -1,5 +1,5 @@
+import { polyfillNode } from 'esbuild-plugin-polyfill-node';
 import { defineConfig } from 'tsup';
-
 export default defineConfig(options => ({
   ...options,
   bundle: true,
@@ -14,4 +14,14 @@ export default defineConfig(options => ({
   sourcemap: true,
   treeshake: true,
   tsconfig: './tsconfig.json',
+  esbuildOptions: options => {
+    options.plugins = [
+      polyfillNode({
+        polyfills: {
+          url: true,
+          querystring: true,
+        },
+      }),
+    ];
+  },
 }));
