@@ -15,12 +15,14 @@ export default defineConfig(options => ({
   sourcemap: true,
   treeshake: true,
   tsconfig: './tsconfig.json',
-  esbuildOptions: options => {
-    options.plugins = [
+  esbuildOptions: opts => {
+    opts.plugins = [
       polyfillNode({
         polyfills: {
           url: true,
           querystring: true,
+        },
+        globals: {
           buffer: true,
         },
       }),

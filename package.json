@@ -1,6 +1,6 @@
 {
   "name": "@zuplo/httpsnippet",
-  "version": "10.0.7",
+  "version": "10.0.8",
   "description": "HTTP Request snippet generator for *most* languages",
   "homepage": "https://github.com/zuplo/httpsnippet",
   "license": "MIT",
