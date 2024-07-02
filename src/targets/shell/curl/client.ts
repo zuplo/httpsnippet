@@ -122,13 +122,16 @@ export const curl: Client<CurlOptions> = {
       case 'multipart/form-data':
         postData.params?.forEach(param => {
           let post = '';
+          // If the parameter is a filename, we want to put shell quotes around
+          // it rather than URL quoting it. Curl wants `file='@img copy.jpg'`
+          // not `file=@img%20copy.jpg`, which it will fail to find
           if (param.fileName) {
-            post = `${param.name}=@${param.fileName}`;
+            post = `${param.name}='@${param.fileName}'`;
           } else {
-            post = `${param.name}=${param.value}`;
+            post = quote(`${param.name}=${param.value}`);
           }
 
-          push(`${arg('form')} ${quote(post)}`);
+          push(`${arg('form')} ${post}`);
         });
         break;
 
@@ -139,7 +142,7 @@ export const curl: Client<CurlOptions> = {
             const encoded = encodeURIComponent(param.name);
             const needsEncoding = encoded !== unencoded;
             const name = needsEncoding ? encoded : unencoded;
-            const flag = binary ? '--data-binary' : `--data${needsEncoding ? '-urlencode' : ''}`;
+            const flag = binary ? '--data-binary' : needsEncoding ? '--data-urlencode' : arg('data');
             push(`${flag} ${quote(`${name}=${param.value}`)}`);
           });
         } else {

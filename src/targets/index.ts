@@ -29,6 +29,7 @@ export type ClientId = string;
 export interface ClientInfo {
   description: string;
   extname: Extension;
+  installation?: string;
   key: ClientId;
   link: string;
   title: string;
@@ -42,6 +43,11 @@ export type Converter<T extends Record<string, any>> = (
 export interface Client<T extends Record<string, any> = Record<string, any>> {
   convert: Converter<T>;
   info: ClientInfo;
+}
+
+export interface ClientPlugin<T extends Record<string, any> = Record<string, any>> {
+  client: Client<T>;
+  target: TargetId;
 }
 
 export type Extension = `.${string}` | null;
@@ -184,6 +190,10 @@ export const isClient = (client: Client): client is Client => {
   }
 
   return true;
+};
+
+export const addClientPlugin = (plugin: ClientPlugin) => {
+  addTargetClient(plugin.target, plugin.client);
 };
 
 export const addTargetClient = (targetId: TargetId, client: Client) => {

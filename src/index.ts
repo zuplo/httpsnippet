@@ -7,7 +7,6 @@ import type { UrlWithParsedQuery } from 'url';
 // eslint-disable-next-line unicorn/prefer-node-protocol, node/no-deprecated-api
 import { format as urlFormat, parse as urlParse } from 'url';
 
-import formDataToString from '@zuplo/formdata-to-string';
 import { stringify as queryStringify } from 'qs';
 
 import { getHeaderName } from './helpers/headers.js';
@@ -15,7 +14,7 @@ import { reducer } from './helpers/reducer.js';
 import { targets } from './targets/index.js';
 
 export { availableTargets, extname } from './helpers/utils.js';
-export { addTarget, addTargetClient } from './targets/index.js';
+export { addClientPlugin, addTarget, addTargetClient } from './targets/index.js';
 
 /** is this wrong?  yes.  according to the spec (http://www.softwareishard.com/blog/har-12-spec/#postData) it's technically wrong since `params` and `text` are (by the spec) mutually exclusive.  However, in practice, this is not what is often the case.
  *
@@ -102,12 +101,10 @@ export class HTTPSnippet {
     }
   }
 
-  async init() {
+  init() {
     this.initCalled = true;
 
-    const promises: Promise<Request>[] = [];
-
-    this.entries.forEach(({ request }) => {
+    this.requests = this.entries.map(({ request }) => {
       // add optional properties to make validation successful
       const req = {
         bodySize: 0,
@@ -127,15 +124,13 @@ export class HTTPSnippet {
         req.postData.mimeType = 'application/octet-stream';
       }
 
-      promises.push(this.prepare(req as HarRequest, this.options));
+      return this.prepare(req as HarRequest, this.options);
     });
-
-    this.requests = await Promise.all(promises);
 
     return this;
   }
 
-  async prepare(harRequest: HarRequest, options: HTTPSnippetOptions) {
+  prepare(harRequest: HarRequest, options: HTTPSnippetOptions) {
     const request: Request = {
       ...harRequest,
       fullUrl: '',
@@ -197,24 +192,42 @@ export class HTTPSnippet {
         request.postData.mimeType = 'multipart/form-data';
 
         if (request.postData?.params) {
-          const form = new FormData();
+          const boundary = '---011000010111000001101001'; // this is binary for "api" (easter egg)
+          const carriage = `${boundary}--`;
+          const rn = '\r\n';
 
-          request.postData?.params.forEach(param => {
+          /*! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
+          const escape = (str: string) => str.replace(/\n/g, '%0A').replace(/\r/g, '%0D').replace(/"/g, '%22');
+          const normalizeLinefeeds = (value: string) => value.replace(/\r?\n|\r/g, '\r\n');
+
+          const payload = [`--${boundary}`];
+          request.postData?.params.forEach((param, i) => {
             const name = param.name;
             const value = param.value || '';
             const filename = param.fileName || null;
-            const contentType = param.contentType || '';
+            const contentType = param.contentType || 'application/octet-stream';
 
             if (filename) {
-              form.append(name, new Blob([value], { type: contentType }), filename);
+              payload.push(
+                `Content-Disposition: form-data; name="${escape(normalizeLinefeeds(name))}"; filename="${filename}"`,
+              );
+              payload.push(`Content-Type: ${contentType}`);
             } else {
-              form.append(name, value);
+              payload.push(`Content-Disposition: form-data; name="${escape(normalizeLinefeeds(name))}"`);
+            }
+
+            payload.push('');
+            payload.push(normalizeLinefeeds(value));
+
+            if (i !== (request.postData.params as Param[]).length - 1) {
+              payload.push(`--${boundary}`);
             }
           });
 
-          const boundary = '---011000010111000001101001'; // this is binary for "api" (easter egg)
+          payload.push(`--${carriage}`);
+
           request.postData.boundary = boundary;
-          request.postData.text = await formDataToString(form, { boundary });
+          request.postData.text = payload.join(rn);
 
           // Since headers are case-sensitive we need to see if there's an existing `Content-Type` header that we can override.
           const contentTypeHeader = getHeaderName(request.headersObj, 'content-type') || 'content-type';
@@ -307,9 +320,9 @@ export class HTTPSnippet {
     };
   }
 
-  async convert(targetId: TargetId, clientId?: ClientId, options?: any) {
+  convert(targetId: TargetId, clientId?: ClientId, options?: any) {
     if (!this.initCalled) {
-      await this.init();
+      this.init();
     }
 
     if (!options && clientId) {
@@ -323,6 +336,6 @@ export class HTTPSnippet {
 
     const { convert } = target.clientsById[clientId || target.info.default];
     const results = this.requests.map(request => convert(request, options));
-    return results.length === 1 ? results[0] : results;
+    return results;
   }
 }

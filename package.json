@@ -1,6 +1,6 @@
 {
   "name": "@zuplo/httpsnippet",
-  "version": "7.2.2",
+  "version": "10.0.5",
   "description": "HTTP Request snippet generator for *most* languages",
   "homepage": "https://github.com/zuplo/httpsnippet",
   "license": "MIT",
@@ -69,14 +69,15 @@
     "url": "https://github.com/zuplo/httpsnippet.git"
   },
   "scripts": {
+    "attw": "attw --pack --format table-flipped",
     "build": "tsup",
     "clean": "rm -rf dist/",
     "lint": "eslint . --ext .js,.cjs,.ts",
     "prebuild": "npm run clean",
     "prepack": "npm run build",
-    "pretest": "npm run lint",
+    "pretest": "npm run lint && npm run prettier",
     "prettier": "prettier --list-different --write .",
-    "test": "vitest --coverage"
+    "test": "vitest run --coverage"
   },
   "dependencies": {
     "@zuplo/formdata-to-string": "^1.1.0",
@@ -85,20 +86,20 @@
     "url": "^0.11.3"
   },
   "devDependencies": {
-    "@readme/eslint-config": "^13.0.1",
-    "@types/eslint": "^8.44.2",
-    "@types/har-format": "^1.2.12",
-    "@types/node": "^20.5.9",
-    "@types/qs": "^6.9.8",
-    "@types/stringify-object": "^4.0.2",
-    "@vitest/coverage-v8": "^0.34.4",
-    "eslint": "^8.48.0",
+    "@readme/eslint-config": "^14.0.0",
+    "@types/eslint": "^8.44.7",
+    "@types/har-format": "^1.2.15",
+    "@types/node": "^20.12.5",
+    "@types/qs": "^6.9.10",
+    "@types/stringify-object": "^4.0.5",
+    "@vitest/coverage-v8": "^1.1.1",
+    "eslint": "^8.57.0",
     "prettier": "^3.0.3",
     "require-directory": "^2.1.1",
-    "tsup": "^7.2.0",
-    "type-fest": "^4.3.1",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.4"
+    "tsup": "^8.0.1",
+    "type-fest": "^4.15.0",
+    "typescript": "^5.4.4",
+    "vitest": "^1.1.1"
   },
   "prettier": "@readme/eslint-config/prettier"
 }
