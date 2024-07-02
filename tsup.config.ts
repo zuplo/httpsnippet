@@ -1,5 +1,6 @@
 import { polyfillNode } from 'esbuild-plugin-polyfill-node';
 import { defineConfig } from 'tsup';
+
 export default defineConfig(options => ({
   ...options,
   bundle: true,
@@ -20,6 +21,7 @@ export default defineConfig(options => ({
         polyfills: {
           url: true,
           querystring: true,
+          buffer: true,
         },
       }),
     ];

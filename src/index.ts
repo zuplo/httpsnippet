@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/order
 import type { Request as NpmHarRequest, Param, PostDataCommon } from 'har-format';
 import type { ReducedHelperObject } from './helpers/reducer.js';
 import type { ClientId, TargetId } from './targets/index.js';
