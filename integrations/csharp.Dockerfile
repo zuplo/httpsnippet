@@ -1,5 +1,5 @@
-FROM node:20-alpine3.18 AS node
-FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine3.18
+FROM node:22-alpine AS node
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine
 
 COPY integrations/https-cert/rootCA.pem /root/integration-test.pem
 
@@ -23,7 +23,7 @@ WORKDIR /src
 #   folder with our test fixtures to run them
 # - install RestSharp into that project
 # - make a folder with the appropriate structure to hold the test fixtures
-RUN dotnet new console -o IntTestCsharp -f net7.0 && \
+RUN dotnet new console -o IntTestCsharp -f net8.0 && \
   cd IntTestCsharp && \
   dotnet add package RestSharp && \
   mkdir -p /src/IntTestCsharp/src/fixtures/files

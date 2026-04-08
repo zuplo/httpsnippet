@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM node:22-alpine
 
 COPY integrations/https-cert/rootCA.pem /root/integration-test.pem
 
@@ -9,8 +9,7 @@ RUN apk --no-cache add ca-certificates && \
   update-ca-certificates
 
 RUN apk update && \
-  apk add nodejs npm python3 py3-pip && \
-  pip install requests
+  apk add python3 py3-pip py3-requests
 
 WORKDIR /src
 
