@@ -1,4 +1,4 @@
-FROM golang:1.20.5-alpine3.18
+FROM node:22-alpine
 
 COPY integrations/https-cert/rootCA.pem /root/integration-test.pem
 
@@ -8,10 +8,8 @@ RUN apk --no-cache add ca-certificates && \
   cp /root/integration-test.pem /usr/local/share/ca-certificates/ && \
   update-ca-certificates
 
-# XXX: do we eventually need to care about getting an exact version of node
-# here? If so, see the csharp container for how to do that
 RUN apk update && \
-  apk add nodejs npm
+  apk add go
 
 WORKDIR /src
 
